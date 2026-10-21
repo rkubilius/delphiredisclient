@@ -12,7 +12,7 @@ uses
   Redis.Values in '..\sources\Redis.Values.pas',
   Redis.Command in '..\sources\Redis.Command.pas',
   Redis.NetLib.Factory in '..\sources\Redis.NetLib.Factory.pas',
-  JsonDataObjects in '..\sources\JsonDataObjects.pas';
+  JsonDataObjects in '..\dependencies\JsonDataObjects\Source\JsonDataObjects.pas';
 
 var
   lRedis: IRedisClient;

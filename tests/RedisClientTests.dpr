@@ -28,7 +28,7 @@ uses
   Redis.Values in '..\sources\Redis.Values.pas',
   TestRedisValuesU in 'TestRedisValuesU.pas',
   RedisMQ.Commands in '..\sources\RedisMQ.Commands.pas',
-  JsonDataObjects in '..\sources\JsonDataObjects.pas';
+  JsonDataObjects in '..\dependencies\JsonDataObjects\Source\JsonDataObjects.pas';
 
 {$R *.RES }
 
