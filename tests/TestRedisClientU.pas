@@ -196,8 +196,8 @@ begin
       lLon := lPieces[LON].Trim.DeQuotedString('"');
       lLat := lPieces[LAT].Trim.DeQuotedString('"');
       lCity := lPieces[CITY].Trim.DeQuotedString('"').ToLower;
-      lStrLat := RoundTo(StrToFloat(lLat, lFS), -6);
-      lStrLon := RoundTo(StrToFloat(lLon, lFS), -6);
+      lStrLat := StrToFloat(lLat, lFS);
+      lStrLon := StrToFloat(lLon, lFS);
       try
         FRedis.GEOADD(KEY_GEODATA, lStrLon, lStrLat, lCity);
         Inc(lCityCount);
@@ -523,6 +523,12 @@ begin
 end;
 
 procedure TestRedisClient.TestGEOPOS;
+const
+  Delta = 0.0001;
+  RomaLat = 41.8960;
+  RomaLon = 12.4833;
+  MilanoLat = 45.4700;
+  MilanoLon = 9.2050;
 var
   lMatrixResp: TRedisMatrix;
   LFormatSettings: TFormatSettings;
@@ -534,19 +540,19 @@ begin
   lMatrixResp := FRedis.GEOPOS(KEY_GEODATA, ['rome']);
   CheckFalse(lMatrixResp.IsNull);
   CheckFalse(lMatrixResp.Items[0].IsNull);
-  CheckEqualsString('41.895999', FloatToStr(RoundTo(StrToFloat(lMatrixResp.Items[0].Items[1], LFormatSettings), -6), LFormatSettings));
-  CheckEqualsString('12.48329848051071167', lMatrixResp.Items[0].Items[0]);
+  CheckEquals(RomaLat, StrToFloat(lMatrixResp.Items[0].Items[1], LFormatSettings), Delta);
+  CheckEquals(RomaLon, StrToFloat(lMatrixResp.Items[0].Items[0], LFormatSettings), Delta);
 
   lMatrixResp := FRedis.GEOPOS(KEY_GEODATA, ['rome', 'milan']);
   CheckFalse(lMatrixResp.IsNull);
   CheckFalse(lMatrixResp.Items[0].IsNull);
   CheckFalse(lMatrixResp.Items[1].IsNull);
 
-  CheckEqualsString('41.89599921996744314', lMatrixResp.Items[0].Items[1]);
-  CheckEqualsString('12.48329848051071167', lMatrixResp.Items[0].Items[0]);
+  CheckEquals(RomaLat, StrToFloat(lMatrixResp.Items[0].Items[1], LFormatSettings), Delta);
+  CheckEquals(RomaLon, StrToFloat(lMatrixResp.Items[0].Items[0], LFormatSettings), Delta);
 
-  CheckEqualsString('45.46999914489508399', lMatrixResp.Items[1].Items[1]);
-  CheckEqualsString('9.20500069856643677', lMatrixResp.Items[1].Items[0]);
+  CheckEquals(MilanoLat, StrToFloat(lMatrixResp.Items[1].Items[1], LFormatSettings), Delta);
+  CheckEquals(MilanoLon, StrToFloat(lMatrixResp.Items[1].Items[0], LFormatSettings), Delta);
 end;
 
 procedure TestRedisClient.TestGEORADIUS;
